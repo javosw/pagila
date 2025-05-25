@@ -1,4 +1,4 @@
-# Pagila
+# Pagila 3.1.0
 
 Pagila started as a port of the [Sakila](https://dev.mysql.com/doc/sakila/en/) example database available for MySQL, which was
 originally developed by Mike Hillyer of the MySQL AB documentation team. It
@@ -30,12 +30,6 @@ Example usage:
 ```sql
 SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
 ```
-
-pgAdmin is included in the docker-compose.
-
-Navigate to the URL : http://localhost:5050/
-Default Username: admin@admin.com
-Default Password: root
 
 ## PARTITIONED TABLES
 
@@ -120,7 +114,7 @@ pagila=#
 1. Run:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 2. Done! Just use:
@@ -137,6 +131,13 @@ postgres=# \c pagila
 You are now connected to database "pagila" as user "postgres".
 pagila=#
 ```
+
+## pgAdmin
+pgAdmin is included in the docker-compose.
+
+Navigate to the URL: http://localhost:5402/
+- Default Username: admin@admin.com
+- Default Password: 122333
 
 ## EXAMPLE QUERY
 
@@ -168,7 +169,7 @@ LIMIT 5;
 Version 3.0.0
 
 - Add JSONB sample data (based on the packages at apt.postgresql.org and yum.postgresql.org)
-- Add docker compose support ( contributed by https://github.com/theothermattm ) https://github.com/devrimgunduz/pagila/pull/16
+- Add docker compose support (contributed by https://github.com/theothermattm) https://github.com/devrimgunduz/pagila/pull/16
 - Add steps to create pagila database on docker by @dedeco in https://github.com/devrimgunduz/pagila/pull/13
 - Add missing user argument by @zOxta in https://github.com/devrimgunduz/pagila/pull/14
 - Update dates to 2022
