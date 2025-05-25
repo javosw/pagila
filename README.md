@@ -21,37 +21,15 @@ changes made were:
 
 The pagila database is made available under PostgreSQL license.
 
-## EXAMPLE QUERY
-
-Find late rentals:
-
-```sql
-SELECT
-	CONCAT(customer.last_name, ', ', customer.first_name) AS customer,
-	address.phone,
-	film.title
-FROM
-	rental
-	INNER JOIN customer ON rental.customer_id = customer.customer_id
-	INNER JOIN address ON customer.address_id = address.address_id
-	INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
-	INNER JOIN film ON inventory.film_id = film.film_id
-WHERE
-	rental.return_date IS NULL
-	AND rental_date < CURRENT_DATE
-ORDER BY
-	title
-LIMIT 5;
-```
-
 ## FULLTEXT SEARCH
 
 Fulltext functionality is built in PostgreSQL, so parts of the schema exist
 in the main schema file.
 
 Example usage:
-
+```sql
 SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
+```
 
 pgAdmin is included in the docker-compose.
 
@@ -80,6 +58,110 @@ please use pg_restore to load jsonb data files:
 pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
 pg_restore /usr/share/pagila/pagila-data-apt-jsonb.sql -U postgres -d pagila
 ```
+
+## CREATE DATABASE ON [DOCKER](https://docs.docker.com/)
+
+1. On terminal pull the latest postgres image:
+
+```
+ docker pull postgres
+```
+
+2. Run image:
+
+```
+ docker run --name postgres -e POSTGRES_PASSWORD=secret -d postgres
+```
+
+3. Run postgres and create the database:
+
+```
+docker exec -it postgres psql -U postgres
+```
+
+```
+psql (13.1 (Debian 13.1-1.pgdg100+1))
+Type "help" for help.
+
+postgres=# CREATE DATABASE pagila;
+postgres=# CREATE DATABASE
+postgres=# \q
+```
+
+4. Create all schema objetcs (tables, etc) replace `<local-repo>` by your local directory :
+
+```
+cat <local-repo>/pagila-schema.sql | docker exec -i postgres psql -U postgres -d pagila
+```
+
+5. Insert all data:
+
+```
+cat <local-repo>/pagila-data.sql | docker exec -i postgres psql -U postgres -d pagila
+```
+
+6. Done! Just use:
+
+```
+docker exec -it postgres psql -U postgres
+```
+
+````
+psql (13.1 (Debian 13.1-1.pgdg100+1))
+Type "help" for help.
+
+postgres=# \c pagila
+You are now connected to database "pagila" as user "postgres".
+pagila=#
+````
+
+## CREATE DATABASE ON [DOCKER-COMPOSE](https://docs.docker.com/compose/)
+
+1. Run:
+
+```
+docker-compose up
+```
+
+2. Done! Just use:
+
+```
+docker exec -it pagila psql -U postgres
+```
+
+```
+psql (13.1 (Debian 13.1-1.pgdg100+1))
+Type "help" for help.
+
+postgres=# \c pagila
+You are now connected to database "pagila" as user "postgres".
+pagila=#
+```
+
+## EXAMPLE QUERY
+
+Find late rentals:
+
+```sql
+SELECT
+	CONCAT(customer.last_name, ', ', customer.first_name) AS customer,
+	address.phone,
+	film.title
+FROM
+	rental
+	INNER JOIN customer ON rental.customer_id = customer.customer_id
+	INNER JOIN address ON customer.address_id = address.address_id
+	INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
+	INNER JOIN film ON inventory.film_id = film.film_id
+WHERE
+	rental.return_date IS NULL
+	AND rental_date < CURRENT_DATE
+ORDER BY
+	title
+LIMIT 5;
+```
+
+
 
 ## VERSION HISTORY
 
@@ -122,143 +204,3 @@ Version 0.9
 Version 0.8
 
 - First release of pagila
-
-## CREATE DATABASE ON [DOCKER](https://docs.docker.com/)
-
-1. On terminal pull the latest postgres image:
-
-```
- docker pull postgres
-```
-
-2. Run image:
-
-```
- docker run --name postgres -e POSTGRES_PASSWORD=secret -d postgres
-```
-
-3. Run postgres and create the database:
-
-```
-docker exec -it postgres psql -U postgres
-```
-
-```
-psql (13.1 (Debian 13.1-1.pgdg100+1))
-Type "help" for help.
-
-postgres=# CREATE DATABASE pagila;
-postgres-# CREATE DATABASE
-postgres=\q
-```
-
-4. Create all schema objetcs (tables, etc) replace `<local-repo>` by your local directory :
-
-```
-cat <local-repo>/pagila-schema.sql | docker exec -i postgres psql -U postgres -d pagila
-```
-
-5. Insert all data:
-
-```
-cat <local-repo>/pagila-data.sql | docker exec -i postgres psql -U postgres -d pagila
-```
-
-6. Done! Just use:
-
-```
-docker exec -it postgres psql -U postgres
-```
-
-````
-postgres
-psql (13.1 (Debian 13.1-1.pgdg100+1))
-Type "help" for help.
-
-postgres=# \c pagila
-You are now connected to database "pagila" as user "postgres".
-pagila=# \dt
-                    List of relations
- Schema |       Name       |       Type        |  Owner
---------+------------------+-------------------+----------
- public | actor            | table             | postgres
- public | address          | table             | postgres
- public | category         | table             | postgres
- public | city             | table             | postgres
- public | country          | table             | postgres
- public | customer         | table             | postgres
- public | film             | table             | postgres
- public | film_actor       | table             | postgres
- public | film_category    | table             | postgres
- public | inventory        | table             | postgres
- public | language         | table             | postgres
- public | payment          | partitioned table | postgres
- public | payment_p2022_01 | table             | postgres
- public | payment_p2022_02 | table             | postgres
- public | payment_p2022_03 | table             | postgres
- public | payment_p2022_04 | table             | postgres
- public | payment_p2022_05 | table             | postgres
- public | payment_p2022_06 | table             | postgres
- public | payment_p2022_07 | table             | postgres
- public | rental           | table             | postgres
- public | staff            | table             | postgres
- public | store            | table             | postgres
-(21 rows)
-
-pagila=#
-```
-````
-
-## CREATE DATABASE ON [DOCKER-COMPOSE](https://docs.docker.com/compose/)
-
-1. Run:
-
-```
-docker-compose up
-```
-
-2. Done! Just use:
-
-```
-docker exec -it pagila psql -U postgres
-```
-
-```
-
-postgres
-psql (13.1 (Debian 13.1-1.pgdg100+1))
-Type "help" for help.
-
-postgres=# \c pagila
-You are now connected to database "pagila" as user "postgres".
-pagila=# \dt
-                    List of relations
- Schema |       Name       |       Type        |  Owner
---------+------------------+-------------------+----------
- public | actor            | table             | postgres
- public | address          | table             | postgres
- public | category         | table             | postgres
- public | city             | table             | postgres
- public | country          | table             | postgres
- public | customer         | table             | postgres
- public | film             | table             | postgres
- public | film_actor       | table             | postgres
- public | film_category    | table             | postgres
- public | inventory        | table             | postgres
- public | language         | table             | postgres
- public | payment          | partitioned table | postgres
- public | payment_p2022_01 | table             | postgres
- public | payment_p2022_02 | table             | postgres
- public | payment_p2022_03 | table             | postgres
- public | payment_p2022_04 | table             | postgres
- public | payment_p2022_05 | table             | postgres
- public | payment_p2022_06 | table             | postgres
- public | payment_p2022_07 | table             | postgres
- public | rental           | table             | postgres
- public | staff            | table             | postgres
- public | store            | table             | postgres
-(21 rows)
-
-pagila=#
-
-```
