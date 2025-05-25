@@ -1,30 +1,27 @@
-# Pagila 3.1.0
+# Pagila
 
-Pagila started as a port of the [Sakila](https://dev.mysql.com/doc/sakila/en/) example database available for MySQL, which was
-originally developed by Mike Hillyer of the MySQL AB documentation team. It
-is intended to provide a standard schema that can be used for examples in
-books, tutorials, articles, samples, etc.
+> Based on Version 3.1.0
 
-Pagila has been tested against PostgreSQL 12 and above.
+> Pagila has been tested against PostgreSQL 12 and above.
 
-All the tables, data, views, and functions have been ported; some of the
-changes made were:
+Pagila started as a port of the [Sakila](https://dev.mysql.com/doc/sakila/en/) example database available for MySQL, which was originally developed by Mike Hillyer of the MySQL AB documentation team. It is intended to provide a standard schema that can be used for examples in books, tutorials, articles, samples, etc.
 
-- Changed char(1) true/false fields to true boolean fields
-- The last_update columns were set with triggers to update them
+All the tables, data, views, and functions have been ported; some of the changes made were:
+
+- Changed `char(1)` true/false fields to proper `boolean` fields
+- The `last_update` columns were set with triggers to update them
 - Added foreign keys
-- Removed 'DEFAULT 0' on foreign keys since it's pointless with real FK's
+- Removed `DEFAULT 0` on foreign keys since it's pointless with real FK's
 - Used PostgreSQL built-in fulltext searching for fulltext index.
-  Removed the need for the film_text table.
-- The rewards_report function was ported to a simple SRF
-- Added JSONB data
+  Removed the need for the `film_text` table.
+- The `rewards_report` function was ported to a simple SRF
+- Added `JSONB` data
 
 The pagila database is made available under PostgreSQL license.
 
 ## FULLTEXT SEARCH
 
-Fulltext functionality is built in PostgreSQL, so parts of the schema exist
-in the main schema file.
+Fulltext functionality is built in PostgreSQL, so parts of the schema exist in the main schema file.
 
 Example usage:
 ```sql
@@ -33,20 +30,14 @@ SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
 
 ## PARTITIONED TABLES
 
-The payment table is designed as a partitioned table with a 7 month timespan
+The `payment` table is designed as a partitioned table with a 7 month timespan
 for the date ranges.
 
 ## INSTALL NOTE
 
-The pagila-data.sql file and the pagila-insert-data.sql both contain the same
-data, the former using COPY commands, the latter using INSERT commands, so you
-only need to install one of them. Both formats are provided for those who have
-trouble using one version or another, and for instructors who want to point out
-the longer data loading time with the latter. You can load them via psql, pgAdmin, etc.
+The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them. Both formats are provided for those who have trouble using one version or another, and for nstructors who want to point out the longer data loading time with the latter. You can load them via psql, pgAdmin, etc.
 
-Since JSONB data is quite large to store on Github, the backup is not a plain SQL
-file. You can still use psql/pgAdmin, etc. to load pagila-schema-jsonb.sql, however
-please use pg_restore to load jsonb data files:
+Since `JSONB` data is quite large to store on Github, the backup is not a plain SQL file. You can still use psql/pgAdmin, etc. to load pagila-schema-jsonb.sql, however please use `pg_restore` to load `jsonb` data files:
 
 ```
 pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
@@ -133,11 +124,11 @@ pagila=#
 ```
 
 ## pgAdmin
-pgAdmin is included in the docker-compose.
+pgAdmin is included in the `docker-compose.yml`.
 
-Navigate to the URL: http://localhost:5402/
-- Default Username: admin@admin.com
-- Default Password: 122333
+Navigate to the URL: [`http://localhost:5402/`](http://localhost:5402/)
+- Default Username: `admin@admin.com`
+- Default Password: `122333`
 
 ## EXAMPLE QUERY
 
@@ -161,47 +152,3 @@ ORDER BY
 	title
 LIMIT 5;
 ```
-
-
-
-## VERSION HISTORY
-
-Version 3.0.0
-
-- Add JSONB sample data (based on the packages at apt.postgresql.org and yum.postgresql.org)
-- Add docker compose support (contributed by https://github.com/theothermattm) https://github.com/devrimgunduz/pagila/pull/16
-- Add steps to create pagila database on docker by @dedeco in https://github.com/devrimgunduz/pagila/pull/13
-- Add missing user argument by @zOxta in https://github.com/devrimgunduz/pagila/pull/14
-- Update dates to 2022
-- Fix various issues reported in Github
-
-Version 2.1.0
-
-- Replace varchar(n) with text (David Fetter)
-- Match foreign key and primary key data type in some tables (Ganeshan Venkataraman)
-- Change CREATE TABLE statement for customer table to use
-  DEFAULT nextval('customer_customer_id_seq'::regclass) for customer_id
-  field instead of SERIAL (Adrian Klaver).
-
-Version 2.0
-
-- Update schema for newer PostgreSQL versions
-- Remove RULE for partitioning, add trigger support.
-- Update years in sample data.
-- Remove ARTICLES section from README, all links are dead.
-
-Version 0.10.1
-
-- Add pagila-data-insert.sql file, added articles section
-
-Version 0.10
-
-- Support for built-in fulltext. Add enum example
-
-Version 0.9
-
-- Add table partitioning example
-
-Version 0.8
-
-- First release of pagila
