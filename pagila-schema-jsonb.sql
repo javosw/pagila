@@ -31,7 +31,7 @@ CREATE TABLE public.packages_apt_postgresql_org (
 );
 
 
-ALTER TABLE public.packages_apt_postgresql_org OWNER TO postgres;
+ALTER TABLE public.packages_apt_postgresql_org OWNER TO javosw;
 
 --
 -- Name: newaptdata_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -58,7 +58,7 @@ CREATE TABLE public.packages_yum_postgresql_org (
 );
 
 
-ALTER TABLE public.packages_yum_postgresql_org OWNER TO postgres;
+ALTER TABLE public.packages_yum_postgresql_org OWNER TO javosw;
 
 --
 -- Name: newyumdata_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres

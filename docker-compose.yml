@@ -8,6 +8,7 @@ services:
       environment:
          POSTGRES_USER: javosw
          POSTGRES_PASSWORD: 122333
+         POSTGRES_DB: pagila
       volumes:
          - ./pagila-schema.sql:/docker-entrypoint-initdb.d/1-pagila-schema.sql
          - ./pagila-data.sql:/docker-entrypoint-initdb.d/2-pagila-data.sql
@@ -17,7 +18,7 @@ services:
       ports:
          - 5401:5432
    pgadmin:
-      container_name: pgadmin4_container
+      container_name: pgadmin4
       image: dpage/pgadmin4
       restart: always
       environment:
