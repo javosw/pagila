@@ -57,15 +57,14 @@ pagila=#
 
 4. **Create all schema objects** (tables, etc):
 
-Replace `<local-repo>` by your local directory:
 ```bash
-cat <local-repo>/pagila-schema.sql | docker exec -i pagila psql -U javosw -d pagila
+docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-schema.sql
 ```
 
 5. **Insert all data**:
 
 ```bash
-cat <local-repo>/pagila-data.sql | docker exec -i pagila psql -U javosw -d pagila
+docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-data.sql
 ```
 
 ## Create database on Docker Compose
@@ -88,18 +87,29 @@ Type "help" for help.
 
 pagila=#
 ```
-## Installation note
+## Installation notes
 
-The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them.
+### Loading Standard Data Files
+The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands (faster for bulk loading), the latter using `INSERT` commands (slower), so you only need to install one of them. Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via `psql`.
 
-Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via **psql**, **pgAdmin**, etc.
+### Loading JSONB Files
+* Schema (plain SQL):
+  * `sql/dump/pagila-schema-jsonb.sql`
 
-Since `JSONB` data is quite large to store on GitHub, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, **however** please use **`pg_restore`** to load `jsonb` data files:
+* Data (binary dump, not plain SQL):
+  * `sql/dump/pagila-data-yum-jsonb.sql`
+  * `sql/dump/pagila-data-apt-jsonb.sql`
+  * `sql/dump/pagila-insert-data_yum-jsonb.sql`
+  * `sql/dump/pagila-insert-data_apt-jsonb.sql`
 
-Replace `<local-repo>` by your local directory:
+
+JSONB dumps are large and complex. To reduce GitHub repo size and retain full structure, they were exported in **custom format** using `pg_dump --format=custom`.
+
+Use `pg_restore` when the file is a **binary dump**. You can still use **`psql`** to load **`pagila-schema-jsonb.sql`**, **however** please **use `pg_restore` to load `jsonb` data files**:
+
 ```bash
-cat <local-repo>/pagila-data-yum-jsonb.sql | docker exec -i pagila pg_restore -U javosw -d pagila
-cat <local-repo>/pagila-data-apt-jsonb.sql | docker exec -i pagila pg_restore -U javosw -d pagila
+docker exec -i pagila psql -U javosw -d pagila < ./sql/dump/pagila-schema-jsonb.sql
+docker exec -i pagila pg_restore --no-owner -U javosw -d pagila < ./sql/dump/pagila-data-apt-jsonb.sql
 ```
 
 ## pgAdmin
