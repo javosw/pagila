@@ -32,7 +32,7 @@ The `payment` table is designed as a **partitioned table** with a 7 month timesp
 docker pull postgres
 ```
 
-1. **Create the database**:
+2. **Create the database**:
 
 ```bash
 docker run --name pagila \
@@ -42,7 +42,7 @@ docker run --name pagila \
 	-d postgres
 ```
 
-1. **Enter to database**:
+3. **Enter to database**:
 
 ```bash
 docker exec -it pagila psql -U javosw -d pagila
@@ -55,17 +55,17 @@ Type "help" for help.
 pagila=#
 ```
 
-2. **Create all schema objetcs** (tables, etc):
+4. **Create all schema objetcs** (tables, etc):
 
 Replace `<local-repo>` by your local directory :
 ```bash
-cat <local-repo>/pagila-schema.sql | docker exec -i postgres psql -U javosw -d pagila
+cat <local-repo>/pagila-schema.sql | docker exec -i pagila psql -U javosw -d pagila
 ```
 
-3. **Insert all data**:
+5. **Insert all data**:
 
 ```bash
-cat <local-repo>/pagila-data.sql | docker exec -i postgres psql -U javosw -d pagila
+cat <local-repo>/pagila-data.sql | docker exec -i pagila psql -U javosw -d pagila
 ```
 
 ## CREATE DATABASE ON DOCKER-COMPOSE
