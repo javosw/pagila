@@ -1,6 +1,6 @@
 # Pagila
 
-> Fork based on **Pagila version 3.1.0**
+> Fork is based on **Pagila version 3.1.0**.
 
 > Pagila has been tested against **PostgreSQL 12 and above**.
 
@@ -16,7 +16,6 @@ All the tables, data, views, and functions have been ported; some of the changes
 - The `rewards_report` function was ported to a simple SRF
 - Added `JSONB` data
 
-
 **Fulltext functionality** is built in PostgreSQL, so parts of the schema exist in the main schema file. Example usage:
 
 ```sql
@@ -25,18 +24,7 @@ SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
 
 The `payment` table is designed as a **partitioned table** with a 7 month timespan for the date ranges.
 
-## INSTALL NOTE
-
-The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them. Both formats are provided for those who have trouble using one version or another, and for nstructors who want to point out the longer data loading time with the latter. You can load them via **psql**, **pgAdmin**, etc.
-
-Since `JSONB` data is quite large to store on Github, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, however please use `pg_restore` to load `jsonb` data files:
-
-```bash
-pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
-pg_restore /usr/share/pagila/pagila-data-apt-jsonb.sql -U postgres -d pagila
-```
-
-## CREATE DATABASE ON [DOCKER](https://docs.docker.com/)
+## CREATE DATABASE ON DOCKER
 
 1. **Pull the latest postgres image**:
 
@@ -58,42 +46,29 @@ docker run --name pagila \
 
 ```bash
 docker exec -it pagila psql -U javosw -d pagila
+```
 
+```bash
 psql (13.1 (Debian 13.1-1.pgdg100+1))
 Type "help" for help.
 
 pagila=#
 ```
 
-4. **Create all schema objetcs** (tables, etc):
+2. **Create all schema objetcs** (tables, etc):
 
 Replace `<local-repo>` by your local directory :
 ```bash
-cat <local-repo>/pagila-schema.sql | docker exec -i postgres psql -U postgres -d pagila
+cat <local-repo>/pagila-schema.sql | docker exec -i postgres psql -U javosw -d pagila
 ```
 
-5. **Insert all data**:
+3. **Insert all data**:
 
 ```bash
-cat <local-repo>/pagila-data.sql | docker exec -i postgres psql -U postgres -d pagila
+cat <local-repo>/pagila-data.sql | docker exec -i postgres psql -U javosw -d pagila
 ```
 
-6. Done! Just use:
-
-```bash
-docker exec -it pagila psql -U postgres
-```
-
-````bash
-psql (13.1 (Debian 13.1-1.pgdg100+1))
-Type "help" for help.
-
-postgres=# \c pagila
-You are now connected to database "pagila" as user "postgres".
-pagila=#
-````
-
-## CREATE DATABASE ON [DOCKER-COMPOSE](https://docs.docker.com/compose/)
+## CREATE DATABASE ON DOCKER-COMPOSE
 
 1. Run:
 
@@ -104,16 +79,24 @@ docker compose up
 2. Done! Just use:
 
 ```bash
-docker exec -it pagila psql -U postgres
+docker exec -it pagila psql -U javosw -d pagila
 ```
 
 ```bash
 psql (13.1 (Debian 13.1-1.pgdg100+1))
 Type "help" for help.
 
-postgres=# \c pagila
-You are now connected to database "pagila" as user "postgres".
 pagila=#
+```
+## INSTALL NOTE
+
+The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them. Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via **psql**, **pgAdmin**, etc.
+
+Since `JSONB` data is quite large to store on GitHub, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, however please use `pg_restore` to load `jsonb` data files:
+
+```bash
+pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
+pg_restore /usr/share/pagila/pagila-data-apt-jsonb.sql -U postgres -d pagila
 ```
 
 ## pgAdmin
