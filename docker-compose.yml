@@ -3,11 +3,11 @@ volumes:
    pgdata:
 services:
    pagila:
-      image: postgres:17
+      image: postgres:17.5
       container_name: pagila
       environment:
-         POSTGRES_PASSWORD: 122333
          POSTGRES_USER: javosw
+         POSTGRES_PASSWORD: 122333
       volumes:
          - ./pagila-schema.sql:/docker-entrypoint-initdb.d/1-pagila-schema.sql
          - ./pagila-data.sql:/docker-entrypoint-initdb.d/2-pagila-data.sql

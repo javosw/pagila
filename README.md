@@ -24,12 +24,12 @@ SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
 
 The `payment` table is designed as a **partitioned table** with a 7 month timespan for the date ranges.
 
-## CREATE DATABASE ON DOCKER
+## Create database on Docker
 
 1. **Pull the latest postgres image**:
 
 ```bash
-docker pull postgres
+docker pull postgres:17.5
 ```
 
 2. **Create the database**:
@@ -49,15 +49,15 @@ docker exec -it pagila psql -U javosw -d pagila
 ```
 
 ```
-psql (13.1 (Debian 13.1-1.pgdg100+1))
+psql (17.5 (Debian 17.5-1.pgdg120+1))
 Type "help" for help.
 
 pagila=#
 ```
 
-4. **Create all schema objetcs** (tables, etc):
+4. **Create all schema objects** (tables, etc):
 
-Replace `<local-repo>` by your local directory :
+Replace `<local-repo>` by your local directory:
 ```bash
 cat <local-repo>/pagila-schema.sql | docker exec -i pagila psql -U javosw -d pagila
 ```
@@ -68,7 +68,7 @@ cat <local-repo>/pagila-schema.sql | docker exec -i pagila psql -U javosw -d pag
 cat <local-repo>/pagila-data.sql | docker exec -i pagila psql -U javosw -d pagila
 ```
 
-## CREATE DATABASE ON DOCKER-COMPOSE
+## Create database on Docker Compose
 
 1. Run:
 
@@ -83,12 +83,12 @@ docker exec -it pagila psql -U javosw -d pagila
 ```
 
 ```
-psql (13.1 (Debian 13.1-1.pgdg100+1))
+psql (17.5 (Debian 17.5-1.pgdg120+1))
 Type "help" for help.
 
 pagila=#
 ```
-## Install note
+## Installation note
 
 The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them.
 
@@ -96,9 +96,10 @@ Both formats are provided for those who have trouble using one version or anothe
 
 Since `JSONB` data is quite large to store on GitHub, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, **however** please use **`pg_restore`** to load `jsonb` data files:
 
+Replace `<local-repo>` by your local directory:
 ```bash
-pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
-pg_restore /usr/share/pagila/pagila-data-apt-jsonb.sql -U postgres -d pagila
+cat <local-repo>/pagila-data-yum-jsonb.sql | docker exec -i pagila pg_restore -U javosw -d pagila
+cat <local-repo>/pagila-data-apt-jsonb.sql | docker exec -i pagila pg_restore -U javosw -d pagila
 ```
 
 ## pgAdmin
