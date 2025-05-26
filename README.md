@@ -1,28 +1,33 @@
 # Pagila
 
-> Fork is based on **Pagila version 3.1.0**.
+> This fork is based on **[Pagila](https://github.com/devrimgunduz/pagila) version 3.1.0**. Pagila has been tested against **PostgreSQL 12 and above**.
 
-> Pagila has been tested against **PostgreSQL 12 and above**.
+## About this Fork
 
-Pagila started as a port of the [Sakila](https://dev.mysql.com/doc/sakila/en/) example database available for MySQL, which was originally developed by Mike Hillyer of the MySQL AB documentation team. It is intended to provide a standard schema that can be used for examples in books, tutorials, articles, samples, etc.
+This fork of the Pagila database focuses on streamlining the installation process and improving overall usability. Several enhancements have been made to simplify setup and clarify structure.
 
-All the tables, data, views, and functions have been ported; some of the changes made were:
+### Key Improvements
 
-- Changed `char(1)` true/false fields to proper `boolean` fields
-- The `last_update` columns were set with triggers to update them
-- Added foreign keys
-- Removed `DEFAULT 0` on foreign keys since it's pointless with real FK's
-- Used PostgreSQL built-in fulltext searching for fulltext index. Removed the need for the `film_text` table.
-- The `rewards_report` function was ported to a simple SRF
-- Added `JSONB` data
+- **Organized File Structure**  
+  Files are now grouped by purpose, resulting in a cleaner and more maintainable directory layout.
 
-**Fulltext functionality** is built in PostgreSQL, so parts of the schema exist in the main schema file. Example usage:
+- **PostgreSQL User Change**  
+  The default PostgreSQL user has been changed from `postgres` to `javosw`.  
+  - As a result, all SQL objects are now owned by `javosw`.
+  > Note: You may need to update ownership manually if your environment relies on the default `postgres` user.
 
-```sql
-SELECT * FROM film WHERE fulltext @@ to_tsquery('fate&india');
-```
+- **Docker Configuration Updates**  
+  The `docker-compose.yml` file has been updated with the following changes:
+  - The database name is now explicitly set to `pagila`.
+  - Exposed ports have been adjusted to avoid conflicts with existing local PostgreSQL installations.
 
-The `payment` table is designed as a **partitioned table** with a 7 month timespan for the date ranges.
+- **Improved Documentation**  
+  The `README.md` has been revised to include:
+  - Clearer setup and installation instructions.
+  - Suggestions for common data querying tasks and challenges.
+
+- **Enhanced ER Diagram**  
+  A high-resolution entity-relationship diagram is now available for reference under the `docs/` directory.
 
 ## Create the database
 
@@ -40,7 +45,7 @@ docker run --name pagila \
   -d postgres:17.5
 ```
 
-1. **Create all schema objects** (tables, etc):
+2. **Create all schema objects** (tables, etc):
 
 ```bash
 docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-schema.sql
@@ -79,6 +84,7 @@ Type "help" for help.
 
 pagila=#
 ```
+
 ## Installation notes
 
 ### Loading Data Files
@@ -144,3 +150,6 @@ ORDER BY
 
 - [Problem Set 1](https://github.com/vanessacrramos/SQL-Case-Study-Sakila)
 - [Problem Set 2](https://github.com/Ragijaireddy/sakila_DB-sql-query-examples)
+
+
+
