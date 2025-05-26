@@ -48,7 +48,7 @@ docker run --name pagila \
 docker exec -it pagila psql -U javosw -d pagila
 ```
 
-```bash
+```
 psql (13.1 (Debian 13.1-1.pgdg100+1))
 Type "help" for help.
 
@@ -82,17 +82,19 @@ docker compose up
 docker exec -it pagila psql -U javosw -d pagila
 ```
 
-```bash
+```
 psql (13.1 (Debian 13.1-1.pgdg100+1))
 Type "help" for help.
 
 pagila=#
 ```
-## INSTALL NOTE
+## Install note
 
-The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them. Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via **psql**, **pgAdmin**, etc.
+The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands, the latter using `INSERT` commands, so you only need to install one of them.
 
-Since `JSONB` data is quite large to store on GitHub, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, however please use `pg_restore` to load `jsonb` data files:
+Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via **psql**, **pgAdmin**, etc.
+
+Since `JSONB` data is quite large to store on GitHub, the backup is not a plain SQL file. You can still use **psql/pgAdmin**, etc. to load `pagila-schema-jsonb.sql`, **however** please use **`pg_restore`** to load `jsonb` data files:
 
 ```bash
 pg_restore /usr/share/pagila/pagila-data-yum-jsonb.sql -U postgres -d pagila
@@ -106,7 +108,7 @@ Navigate to the URL: [`http://localhost:5402/`](http://localhost:5402/)
 - Default Username: `admin@admin.com`
 - Default Password: `122333`
 
-## EXAMPLE QUERY
+## Sample query
 
 Find late rentals:
 
