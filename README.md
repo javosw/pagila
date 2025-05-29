@@ -6,79 +6,76 @@
 
 This fork of the Pagila database focuses on streamlining the installation process and improving overall usability. Several enhancements have been made to simplify setup and clarify structure.
 
-### Key Improvements
+### Overview of Changes
 
-- **Organized File Structure**  
-  Files are now grouped by purpose, resulting in a cleaner and more maintainable directory layout.
+- Files are now grouped by purpose, resulting in a **cleaner directory layout**.
 
-- **PostgreSQL User Change**  
-  The default PostgreSQL user has been changed from `postgres` to `javosw`.  
-  - As a result, all SQL objects are now owned by `javosw`.
-  > Note: You may need to update ownership manually if your environment relies on the default `postgres` user.
+- The default PostgreSQL user has been changed from `postgres` to `javosw`. As a result, all SQL objects are now owned by `javosw`.
 
-- **Docker Configuration Updates**  
-  The `docker-compose.yml` file has been updated with the following changes:
+- The `docker-compose.yml` file has been updated with the following changes:
   - The database name is now explicitly set to `pagila`.
   - Exposed ports have been adjusted to avoid conflicts with existing local PostgreSQL installations.
 
-- **Improved Documentation**  
-  The `README.md` has been revised to include:
+- The `README.md` has been revised to include:
   - Clearer setup and installation instructions.
-  - Suggestions for common data querying tasks and challenges.
+  - Links to solved querying problems on Sakila for practice and learning.
 
-- **Enhanced ER Diagram**  
-  A high-resolution entity-relationship diagram is now available for reference under the `docs/` directory.
+- A **high-resolution entity-relationship diagram** was added under the `docs/` directory.
 
 ## Create the database
 
 ### Using Docker
+
 1. **Create the database**:
 
-```bash
-docker pull postgres:17.5
-
-docker run --name pagila \
-  -e POSTGRES_USER=javosw \
-  -e POSTGRES_PASSWORD=122333 \
-  -e POSTGRES_DB=pagila \
-  -p 5401:5432 \
-  -d postgres:17.5
-```
+    ```bash
+    docker pull postgres:17.5
+    
+    docker run --name pagila \
+      -e POSTGRES_USER=javosw \
+      -e POSTGRES_PASSWORD=122333 \
+      -e POSTGRES_DB=pagila \
+      -p 5401:5432 \
+      -d postgres:17.5
+    ```
 
 2. **Create all schema objects** (tables, etc):
 
-```bash
-docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-schema.sql
-```
+    ```bash
+    docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-schema.sql
+    ```
 
 3. **Insert all data**:
 
-```bash
-docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-data.sql
-```
+    ```bash
+    docker exec -i pagila psql -U javosw -d pagila < ./sql/main/pagila-data.sql
+    ```
 
 ### Using Docker Compose
 
 1. **Run**:
 
-```bash
-docker compose up
-```
+    ```bash
+    docker compose up
+    ```
 
 ## **Enter the database**
 
 **Option 1**:
+
 ```bash
 docker exec -it pagila psql -U javosw -d pagila
 ```
 
 **Option 2**:
+
 ```bash
 psql -h localhost -p 5401 -U javosw -d pagila
 ```
 
 **Done!** You're in.
-```
+
+```plaintext
 psql (17.5 (Debian 17.5-1.pgdg120+1))
 Type "help" for help.
 
@@ -88,32 +85,51 @@ pagila=#
 ## Installation notes
 
 ### Loading Data Files
-The `pagila-data.sql` file and the `pagila-insert-data.sql` both contain the same data, the former using `COPY` commands (**faster** for bulk loading), the latter using `INSERT` commands (**slower**), so **you only need to install one of them**. Both formats are provided for those who have trouble using one version or another, and for instructors who want to point out the longer data loading time with the latter. You can load them via `psql`.
+
+The `pagila-data.sql` and `pagila-insert-data.sql` files contain the same dataset, but differ in how they load the data:
+
+- **`pagila-data.sql`** uses `COPY` commands — **faster** loading.
+- **`pagila-insert-data.sql`** uses `INSERT` statements — **slower** loading.
+
+You only need to use **one** of these files.
+
+Both options are provided:
+
+- To support users who may have issues with one format.
+- For instructors who want to demonstrate the performance difference between `COPY` and `INSERT`.
+
+You can load either file using `psql`.
 
 ### Loading JSONB Files
-* Schema (plain SQL):
-  * `sql/dump/pagila-schema-jsonb.sql`
 
-* Data (**binary dump**, not plain SQL):
-  * `sql/dump/pagila-data-yum-jsonb.sql`
-  * `sql/dump/pagila-data-apt-jsonb.sql`
-  * `sql/dump/pagila-insert-data_yum-jsonb.sql`
-  * `sql/dump/pagila-insert-data_apt-jsonb.sql`
+The JSONB version of the dataset is divided into:
 
-JSONB dumps are large and complex. To reduce GitHub repo size and retain full structure, they were exported in **custom format** using `pg_dump --format=custom`.
+- Schema (plain SQL):
+  Use `psql` to load:
+  - `sql/dump/pagila-schema-jsonb.sql`
 
-Use `pg_restore` when the file is a **binary dump**. You can still use **`psql`** to load **`pagila-schema-jsonb.sql`**, **however** please **use `pg_restore` to load `jsonb` data files**:
+- Data (**binary dump**, not plain SQL):
+  Use `pg_restore` to load:
+  - `sql/dump/pagila-data-yum-jsonb.sql`
+  - `sql/dump/pagila-data-apt-jsonb.sql`
+  - `sql/dump/pagila-insert-data_yum-jsonb.sql`
+  - `sql/dump/pagila-insert-data_apt-jsonb.sql`
+
+> These **JSONB data files** were exported using `pg_dump --format=custom` to reduce repository size.
 
 ```bash
+# schema
 docker exec -i pagila psql -U javosw -d pagila < ./sql/dump/pagila-schema-jsonb.sql
-
+# data
 docker exec -i pagila pg_restore --no-owner -U javosw -d pagila < ./sql/dump/pagila-data-apt-jsonb.sql
 ```
 
 ## pgAdmin
+
 pgAdmin is included in the `docker-compose.yml`.
 
 Navigate to the URL: [`http://localhost:5402/`](http://localhost:5402/)
+
 - Default Username: `admin@admin.com`
 - Default Password: `122333`
 
@@ -150,6 +166,3 @@ ORDER BY
 
 - [Problem Set 1](https://github.com/vanessacrramos/SQL-Case-Study-Sakila)
 - [Problem Set 2](https://github.com/Ragijaireddy/sakila_DB-sql-query-examples)
-
-
-

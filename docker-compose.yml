@@ -1,6 +1,7 @@
-version: "3"
+version: "3.8"
 volumes:
-   pgdata:
+   pg_data:
+   pgadmin_data:
 services:
    pagila:
       image: postgres:17.5
@@ -12,7 +13,7 @@ services:
       volumes:
          - ./sql/main/pagila-schema.sql:/docker-entrypoint-initdb.d/1-pagila-schema.sql
          - ./sql/main/pagila-data.sql:/docker-entrypoint-initdb.d/2-pagila-data.sql
-         - pgdata:/var/lib/postgresql/data
+         - pg_data:/var/lib/postgresql/data
       expose:
          - 5432
       ports:
@@ -24,5 +25,7 @@ services:
       environment:
          PGADMIN_DEFAULT_EMAIL: admin@admin.com
          PGADMIN_DEFAULT_PASSWORD: 122333
+      volumes:
+         - pgadmin_data:/var/lib/pgadmin
       ports:
          - "5402:80"
