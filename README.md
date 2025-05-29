@@ -91,31 +91,26 @@ The `pagila-data.sql` and `pagila-insert-data.sql` files contain the same datase
 - **`pagila-data.sql`** uses `COPY` commands — **faster** loading.
 - **`pagila-insert-data.sql`** uses `INSERT` statements — **slower** loading.
 
-You only need to use **one** of these files.
+You only need to use **one** of these files. You can load either file using `psql`.
 
 Both options are provided:
 
 - To support users who may have issues with one format.
 - For instructors who want to demonstrate the performance difference between `COPY` and `INSERT`.
 
-You can load either file using `psql`.
-
 ### Loading JSONB Files
 
 The JSONB version of the dataset is divided into:
 
-- Schema (plain SQL):
-  Use `psql` to load:
+- **Schema** (plain SQL — use `psql` to load):
   - `sql/dump/pagila-schema-jsonb.sql`
 
-- Data (**binary dump**, not plain SQL):
-  Use `pg_restore` to load:
+- **Data** (custom-format binary dumps — use `pg_restore` to load):
   - `sql/dump/pagila-data-yum-jsonb.sql`
   - `sql/dump/pagila-data-apt-jsonb.sql`
   - `sql/dump/pagila-insert-data_yum-jsonb.sql`
   - `sql/dump/pagila-insert-data_apt-jsonb.sql`
-
-> These **JSONB data files** were exported using `pg_dump --format=custom` to reduce repository size.
+  > These **JSONB data files** were exported using `pg_dump --format=custom` to reduce repository size.
 
 ```bash
 # schema
